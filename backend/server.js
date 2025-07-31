@@ -2,20 +2,21 @@ const express = require('express')
 const app = express()
 const PORT = 3000
 
+const fs = require('fs') // file system
+const path = require('path')
+const dbPath = path.join(__dirname, 'db.json')
+
 app.use(express.json())
 
-let investments = [
-  {
-    id: 1,
-    name: "Apple",
-    type: "stock",
-    amount: 1000,
-    currency: "USD"
-  }
-]
-
 app.get('/api/investments', (req, res) => {
-  res.json(investments)
+  try {
+    const data = fs.readFileSync(dbPath, 'utf-8')
+    // parse json string javascript object before response
+    const parseData = JSON.parse(data)
+    res.json(parseData.investments)
+  } catch (error) {
+    console.error('Failed to read data.', error)
+  }
 })
 
 app.listen(PORT, () => {

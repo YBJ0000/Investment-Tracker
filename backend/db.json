@@ -1,0 +1,11 @@
+{
+  "investments": [
+    {
+      "id": 1,
+      "name": "Apple",
+      "type": "stock",
+      "amount": 1000,
+      "currency": "USD"
+    }
+  ]
+}
