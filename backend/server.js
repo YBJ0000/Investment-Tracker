@@ -1,3 +1,4 @@
+const { error } = require('console')
 const express = require('express')
 const app = express()
 const PORT = 3000
@@ -43,6 +44,36 @@ app.post('/api/investments', (req, res) => {
   } catch (error) {
     console.error('Failed to create data.', error)
     res.status(500).json({ error: 'Failed to create investment' })
+  }
+})
+
+app.delete('/api/investments/:id', (req, res) => {
+  try {
+    const data = fs.readFileSync(dbPath, 'utf-8')
+    const parsedData = JSON.parse(data)
+
+    // find index of target investment
+    const index = parsedData.investments.findIndex(investment => investment.id === parseInt(req.params.id))
+
+    // if not exist, return 404
+    if (index === -1) {
+      return res.status(404).json({ error: 'Investment does not exist' })
+    }
+
+    // delete investment
+    const deletedInvestment = parsedData.investments.splice(index, 1)[0]
+
+    // write into db.json
+    fs.writeFileSync(dbPath, JSON.stringify(parsedData, null, 2))
+
+    // return deleted investment
+    res.json({
+      message: 'Investment has been deleted',
+      deletedInvestment
+    })
+
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete investment', message: error.message })
   }
 })
 
