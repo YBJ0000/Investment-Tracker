@@ -6,6 +6,20 @@
       "type": "stock",
       "amount": 1000,
       "currency": "USD"
+    },
+    {
+      "id": 2,
+      "name": "Tesla",
+      "type": "stock",
+      "amount": 2000,
+      "currency": "USD"
+    },
+    {
+      "id": 3,
+      "name": "Nvidia",
+      "type": "stock",
+      "amount": 3000,
+      "currency": "USD"
     }
   ]
 }

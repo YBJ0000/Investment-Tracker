@@ -12,10 +12,37 @@ app.get('/api/investments', (req, res) => {
   try {
     const data = fs.readFileSync(dbPath, 'utf-8')
     // parse json string javascript object before response
-    const parseData = JSON.parse(data)
-    res.json(parseData.investments)
+    const parsedData = JSON.parse(data)
+    res.json(parsedData.investments)
   } catch (error) {
     console.error('Failed to read data.', error)
+  }
+})
+
+app.post('/api/investments', (req, res) => {
+  try {
+
+    // read current data
+    const data = fs.readFileSync(dbPath, 'utf-8')
+    const parsedData = JSON.parse(data)
+
+    // create new investment
+    const newInvestment = {
+      id: parsedData.investments.length + 1,
+      ...req.body
+    }
+
+    // push to the array
+    parsedData.investments.push(newInvestment)
+
+    // write into db.json
+    fs.writeFileSync(dbPath, JSON.stringify(parsedData, null, 2))
+
+    // return created data
+    res.status(201).json(newInvestment)
+  } catch (error) {
+    console.error('Failed to create data.', error)
+    res.status(500).json({ error: 'Failed to create investment' })
   }
 })
 
