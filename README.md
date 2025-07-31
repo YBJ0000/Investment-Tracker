@@ -10,4 +10,4 @@ try `curl http://localhost:3000/api/investments` to get info from server
 
 add db.json
 modify server.js: read data from db.json
-
+note: must parse json string javascript object before response
