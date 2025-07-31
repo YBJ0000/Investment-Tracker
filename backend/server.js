@@ -49,6 +49,8 @@ app.post('/api/investments', (req, res) => {
 
 app.delete('/api/investments/:id', (req, res) => {
   try {
+    
+    // read current data
     const data = fs.readFileSync(dbPath, 'utf-8')
     const parsedData = JSON.parse(data)
 
