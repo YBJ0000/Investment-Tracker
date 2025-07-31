@@ -18,3 +18,5 @@ create new data (generate id and conbine request body)
 push new data to the end of current data array
 write into db.json
 return http status and created data
+
+api test guide in backend/API_TESTS.md
