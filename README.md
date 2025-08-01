@@ -32,3 +32,7 @@ investment not exist, return 404
 delete investment using splice()
 write into db.json
 return http status and deleted data
+
+modify server.js:
+(PUT method)
+just combine the traits of both POST and DELETE

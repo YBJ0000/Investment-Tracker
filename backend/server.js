@@ -49,7 +49,7 @@ app.post('/api/investments', (req, res) => {
 
 app.delete('/api/investments/:id', (req, res) => {
   try {
-    
+
     // read current data
     const data = fs.readFileSync(dbPath, 'utf-8')
     const parsedData = JSON.parse(data)
@@ -76,6 +76,33 @@ app.delete('/api/investments/:id', (req, res) => {
 
   } catch (error) {
     res.status(500).json({ error: 'Failed to delete investment', message: error.message })
+  }
+})
+
+app.put('/api/investments/:id', (req, res) => {
+  try {
+
+    const data = fs.readFileSync(dbPath, 'utf-8')
+    const parsedData = JSON.parse(data)
+
+    const index = parsedData.investments.findIndex(investments => investments.id === parseInt(req.params.id))
+
+    if (index === -1) {
+      return res.status(404).json({ error: 'Investment does not exist' })
+    }
+
+    parsedData.investments[index] = req.body
+    updatedInvestment = parsedData.investments[index]
+
+    fs.writeFileSync(dbPath, JSON.stringify(parsedData, null, 2))
+
+    res.json({
+      message: 'Investment has been updated',
+      updatedInvestment
+    })
+
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update investment', message: error.message })
   }
 })
 
