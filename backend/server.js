@@ -92,7 +92,7 @@ app.put('/api/investments/:id', (req, res) => {
     }
 
     parsedData.investments[index] = req.body
-    updatedInvestment = parsedData.investments[index]
+    const updatedInvestment = parsedData.investments[index]
 
     fs.writeFileSync(dbPath, JSON.stringify(parsedData, null, 2))
 

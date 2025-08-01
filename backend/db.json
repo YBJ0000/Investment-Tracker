@@ -20,6 +20,13 @@
       "type": "stock",
       "amount": 3000,
       "currency": "USD"
+    },
+    {
+      "id": 4,
+      "name": "Bitcoin",
+      "type": "crypto",
+      "amount": 0.1,
+      "currency": "BTC"
     }
   ]
 }
