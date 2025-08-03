@@ -36,3 +36,11 @@ return http status and deleted data
 modify server.js:
 (PUT method)
 just combine the traits of both POST and DELETE
+
+install jwt and bcrypt
+
+modify server.js:
+import jwt and bcrypt
+add auth middleware
+new feature: login and registration
+
