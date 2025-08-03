@@ -11,6 +11,91 @@ node server.js
 
 服务器默认运行在 `http://localhost:3000`
 
+## 用户认证
+
+### 注册新用户
+
+```bash
+curl -X POST http://localhost:3000/api/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "testuser",
+    "password": "password123"
+  }'
+```
+
+**预期响应：**
+```json
+{
+  "message": "User registered successfully",
+  "user": {
+    "id": 1,
+    "username": "testuser"
+  }
+}
+```
+
+### 用户登录
+
+```bash
+curl -X POST http://localhost:3000/api/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "testuser",
+    "password": "password123"
+  }'
+```
+
+**预期响应：**
+```json
+{
+  "message": "Login successful",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": 1,
+    "username": "testuser"
+  }
+}
+```
+
+### 测试无效登录
+
+```bash
+# 错误的用户名
+curl -X POST http://localhost:3000/api/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "wronguser",
+    "password": "password123"
+  }'
+
+# 错误的密码
+curl -X POST http://localhost:3000/api/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "testuser",
+    "password": "wrongpassword"
+  }'
+```
+
+### 测试重复注册
+
+```bash
+curl -X POST http://localhost:3000/api/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "testuser",
+    "password": "password123"
+  }'
+```
+
+**预期响应：**
+```json
+{
+  "error": "Username already exists"
+}
+```
+
 ## GET 请求
 
 ### 获取所有投资记录

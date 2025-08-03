@@ -1,5 +1,11 @@
 {
-  "users": [],
+  "users": [
+    {
+      "id": 1,
+      "username": "testuser",
+      "password": "$2b$10$ohiTePHdvJSxkHRirSg4A.XtKRvVrxbCtc8NTyF9O0Khfcsp7Wvtm"
+    }
+  ],
   "investments": [
     {
       "id": 1,
