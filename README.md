@@ -44,3 +44,5 @@ import jwt and bcrypt
 add auth middleware
 new feature: login and registration
 
+modify server.js:
+add auth middleware (authenticateToken) to every route about investments as the second parameter
