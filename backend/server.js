@@ -132,7 +132,7 @@ app.post('/api/login', async (req, res) => {
 
 
 
-app.get('/api/investments', (req, res) => {
+app.get('/api/investments', authenticateToken, (req, res) => {
   try {
     const data = fs.readFileSync(dbPath, 'utf-8')
     // parse json string into a javascript object before sending response
@@ -143,7 +143,7 @@ app.get('/api/investments', (req, res) => {
   }
 })
 
-app.post('/api/investments', (req, res) => {
+app.post('/api/investments', authenticateToken, (req, res) => {
   try {
 
     // read current data
@@ -170,7 +170,7 @@ app.post('/api/investments', (req, res) => {
   }
 })
 
-app.delete('/api/investments/:id', (req, res) => {
+app.delete('/api/investments/:id', authenticateToken, (req, res) => {
   try {
 
     // read current data
@@ -202,7 +202,7 @@ app.delete('/api/investments/:id', (req, res) => {
   }
 })
 
-app.put('/api/investments/:id', (req, res) => {
+app.put('/api/investments/:id', authenticateToken, (req, res) => {
   try {
 
     const data = fs.readFileSync(dbPath, 'utf-8')
