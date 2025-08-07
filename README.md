@@ -43,3 +43,10 @@ add auth middleware
 new feature: login and registration
 add auth middleware (authenticateToken) to every route about investments as the second parameter
 
+create .env
+install dotenv
+
+modify server.js:
+import dotenv
+change how PORT and JWT_JWT_SECRET init
+

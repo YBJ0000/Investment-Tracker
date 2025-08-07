@@ -1,7 +1,7 @@
-const { error } = require('console')
+require('dotenv').config()
 const express = require('express')
 const app = express()
-const PORT = 3000
+const PORT = process.env.PORT || 3000
 
 const fs = require('fs') // file system
 const path = require('path')
@@ -10,7 +10,7 @@ const dbPath = path.join(__dirname, 'db.json')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 
-const JWT_SECRET = 'your-secret-key' // should use env in production en
+const JWT_SECRET = process.env.JWT_SECRET
 
 app.use(express.json())
 
