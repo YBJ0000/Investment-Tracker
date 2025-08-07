@@ -134,7 +134,7 @@ app.get('/api/profile', authenticateToken, (req, res) => {
 
     // current user info
     const currentUser = parsedData.users.find(
-      user => user.id === req.user.id
+      user => user.id === req.user.userId
     )
 
     if (!currentUser) {
