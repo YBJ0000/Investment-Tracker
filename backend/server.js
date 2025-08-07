@@ -38,7 +38,7 @@ app.post('/api/register', async (req, res) => {
     const { username, password } = req.body
 
     if (!username || !password) {
-      return res.status(400).json({ error: 'Username and password are required'})
+      return res.status(400).json({ error: 'Username and password are required' })
     }
 
     // read current data
@@ -87,7 +87,7 @@ app.post('/api/login', async (req, res) => {
 
     // verify input
     if (!username || !password) {
-      return res.status(400).json({ error: 'Username and password are required'})
+      return res.status(400).json({ error: 'Username and password are required' })
     }
 
     // read current data
@@ -127,10 +127,26 @@ app.post('/api/login', async (req, res) => {
   }
 })
 
+app.get('/api/profile', authenticateToken, (req, res) => {
+  try {
+    const data = fs.readFileSync(dbPath, 'utf-8')
+    const parsedData = JSON.parse(data)
 
+    // current user info
+    const currentUser = parsedData.users.find(
+      user => user.id === req.user.id
+    )
 
+    if (!currentUser) {
+      return res.status(404).json({ error: 'User not found' })
+    }
 
-
+    res.json(currentUser)
+  } catch (error) {
+    console.error('Failed to read user profile.', error)
+    res.status(500).json({ error: 'Failed to get user profile' })
+  }
+})
 
 app.get('/api/investments', authenticateToken, (req, res) => {
   try {

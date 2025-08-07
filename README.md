@@ -32,8 +32,6 @@ investment not exist, return 404
 delete investment using splice()
 write into db.json
 return http status and deleted data
-
-modify server.js:
 (PUT method)
 just combine the traits of both POST and DELETE
 
@@ -43,6 +41,5 @@ modify server.js:
 import jwt and bcrypt
 add auth middleware
 new feature: login and registration
-
-modify server.js:
 add auth middleware (authenticateToken) to every route about investments as the second parameter
+
