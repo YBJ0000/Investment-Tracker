@@ -49,4 +49,6 @@ install dotenv
 modify server.js:
 import dotenv
 change how PORT and JWT_JWT_SECRET init
+add userId to POST /api/investments
+add filter to GET /api/investments, only return current user info
 

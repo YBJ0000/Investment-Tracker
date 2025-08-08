@@ -153,7 +153,11 @@ app.get('/api/investments', authenticateToken, (req, res) => {
     const data = fs.readFileSync(dbPath, 'utf-8')
     // parse json string into a javascript object before sending response
     const parsedData = JSON.parse(data)
-    res.json(parsedData.investments)
+
+    // filter investments by user id
+    const userInvestments = parsedData.investments.filter(investment => investment.userId === req.user.userId)
+
+    res.json(userInvestments)
   } catch (error) {
     console.error('Failed to read data.', error)
   }
@@ -169,6 +173,7 @@ app.post('/api/investments', authenticateToken, (req, res) => {
     // create new investment
     const newInvestment = {
       id: parsedData.investments.length + 1,
+      userId: req.user.userId,
       ...req.body
     }
 
