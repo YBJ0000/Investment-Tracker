@@ -2,8 +2,12 @@
 
 launch node.js backend:
 add package.json for setup and dependencies
+ (can also by set up by `npm init -y`, 
+  and add `"start": "node server.js"` to package.json
+  and then `npm i express`)
 add server.js as the main backend server
 add .gitignore to prevent node_modules, .env... files from uploading
+run `git init` to init git for version control
 run `npm i` to install dependencies
 run `npm start` to start the server
 try `curl http://localhost:3000/api/investments` to get info from server
@@ -35,7 +39,7 @@ return http status and deleted data
 (PUT method)
 just combine the traits of both POST and DELETE
 
-install jwt and bcrypt
+install jsonwebtoken and bcrypt
 
 modify server.js:
 import jwt and bcrypt
