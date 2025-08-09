@@ -28,6 +28,31 @@
 - **输入**：端口号与回调。
 - **输出**：启动 HTTP 服务器。
 - **用途**：启动服务并监听端口。
+- **补充**：Node.js让操作系统监听PORT端口，当PORT端口收到请求时，操作系统把这个请求交给Node.js处理。
+- **时序图**：
+  ```mermaid
+      sequenceDiagram
+          autonumber
+          participant App as 你的代码(app.listen)
+          participant Node as Node.js
+          participant OS as 操作系统
+          participant EvLoop as 事件循环
+          participant Express as Express
+          participant Handler as 路由处理函数
+          participant Client as 客户端
+  
+          App->>Node: 创建HTTP服务器并调用 listen(PORT)
+          Node->>OS: 请求监听 PORT
+          OS-->>Node: 端口就绪
+          Node-->>App: 执行回调(console.log)
+  
+          Client->>OS: 连接 :PORT 并发送HTTP请求
+          OS-->>Node: 把请求交给 Node.js
+          Node->>EvLoop: 投递“请求到达”事件
+          EvLoop->>Express: 路由匹配/中间件
+          Express->>Handler: 执行(req, res)
+          Handler-->>Client: 返回响应
+  ```
 - **示例**
   ```js
   app.listen(PORT, () => console.log(`Server on http://localhost:${PORT}`))
@@ -83,9 +108,9 @@
   const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1] // Bearer TOKEN
-
+  
     if (!token) return res.status(401).json({ error: 'Access token required' })
-
+  
     jwt.verify(token, JWT_SECRET, (err, user) => {
       if (err) return res.status(403).json({ error: 'Invalid or expired token' })
       req.user = user
