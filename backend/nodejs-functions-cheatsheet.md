@@ -244,6 +244,36 @@
 - **输出**：**字符串**。
 - **用途**：写回文件/网络响应。`null, 2` 只是让文件更易读。
 
+### 相关知识补充
+- **对象（Object）**
+  - 在 JavaScript 里，对象是一组键值对（key-value pairs）的集合，用来描述某个事物的属性和行为。
+  - 键（key）：属性名（通常是字符串，也可以是 Symbol）
+  - 值（value）：可以是任何类型（数字、字符串、布尔值、数组、对象、函数等）
+  - 例子：
+    ```js
+    const user = {
+      name: 'Alice',
+      age: 20,
+      isAdmin: false
+    }
+    ```
+    这里 user 是对象，它有三个键值对。
+
+- **属性（Property）**
+  - 对象里的每一对键值就是一个属性：
+    - 属性名：id、username、isAdmin
+    - 属性值：1、"alice"、false
+  - 属性有两种访问方式：
+    - 点操作符（dot notation）
+      ```js
+      console.log(user.username) // "alice" 
+      ```
+    - 方括号（bracket notation）
+      ```js
+      console.log(user['username']) // "alice"
+      ```
+  - `JSON.parse` 的目的就是把 JSON 字符串变成真正的对象，这样你才能用 . 或 [] 访问它的属性。
+
 ---
 
 ## 8) 常见数组方法（面试高频 / 需要细讲）
