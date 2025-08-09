@@ -40,19 +40,19 @@
           participant Express as Express
           participant Handler as 路由处理函数
           participant Client as 客户端
-  
+
           App->>Node: 创建HTTP服务器并调用 listen(PORT)
           Node->>OS: 请求监听 PORT
           OS-->>Node: 端口就绪
           Node-->>App: 执行回调(console.log)
-  
+
           Client->>OS: 连接 :PORT 并发送HTTP请求
           OS-->>Node: 把请求交给 Node.js
           Node->>EvLoop: 投递“请求到达”事件
           EvLoop->>Express: 路由匹配/中间件
           Express->>Handler: 执行(req, res)
           Handler-->>Client: 返回响应
-  ```
+
 - **示例**
   ```js
   app.listen(PORT, () => console.log(`Server on http://localhost:${PORT}`))
@@ -158,6 +158,54 @@
 - **输入**：明文密码、已保存的哈希。
 - **输出**：**布尔**（是否匹配）。
 - **用途**：登录时验证密码。
+
+### 相关知识补充
+- **为什么bcrypt有关的函数要用async/await？**
+  - Node.js 是单线程的，如果你用同步的密码哈希方法（bcrypt.hashSync），一次哈希可能要几十到几百毫秒，这段时间整个进程不能处理其他请求。
+  - 异步方法（bcrypt.hash / bcrypt.compare）内部会把计算丢给线程池（libuv），在哈希的同时，主线程可以去处理其他请求。libuv是Node.js的异步I/O库，负责管理事件循环和线程池。
+- **单线程不应该很慢吗？为什么还能做高并发？**：
+  - Node.js 之所以能做高可用、高并发、高性能的后端，是因为单线程事件循环避免了多线程的开销，异步 I/O + 线程池让它几乎不被阻塞。在 I/O 密集型场景里，它能轻松撑住上万连接。
+  - 高并发并不等于多线程：
+    高并发指的是同时处理很多请求，而不是同时并行跑很多计算。大部分 Web 请求 不是一直在计算，而是在：等数据库响应、等磁盘读写、等网络 API。这些等待时间里，CPU 是空闲的，如果你用多线程来等，其实浪费资源。
+  - Node.js 的设计哲学：
+      - 主线程负责调度（事件循环）
+      - 耗时的 I/O 交给线程池/操作系统（异步 I/O）
+      - 当 I/O 完成，结果回调到事件循环继续执行
+      所以：
+        - 主线程几乎不等，所以可以很快地处理成千上万的连接
+        - 内存占用低（不像 Java/C++ 那样为每个线程分配栈空间）
+        - 更适合 I/O 密集型任务（API 网关、实时推送、聊天、文件上传等）
+- **为什么依然能“高性能”？**
+  - 少上下文切换：
+    - 多线程模型下，线程多了要频繁切换上下文（保存和恢复寄存器、栈等）
+    - Node.js 只有一个主线程执行 JS，调度成本极低
+  - 非阻塞 I/O：
+    - 数据库查询、网络请求、文件 I/O 全部异步
+    - 主线程几乎全在跑业务逻辑，而不是在等
+  - 事件驱动：
+    - 一个请求到来时，如果需要 I/O，立刻挂起，去处理别的请求
+    - 完成时回调，不会阻塞别人
+
+  ```mermaid
+  sequenceDiagram
+    participant Client as 客户端
+    participant Main as Node.js 主线程(事件循环)
+    participant Pool as 线程池(I/O/CPU密集)
+    participant Crypto as bcrypt哈希计算
+
+    Client->>Main: HTTP POST /api/register (username + password)
+    Main->>Main: 执行验证输入
+    Main->>Pool: bcrypt.hash(password, saltRounds)
+    Note right of Main: 主线程立即继续处理其他请求
+
+    Pool->>Crypto: 执行加盐 + 多轮哈希
+    Crypto-->>Pool: 生成哈希值
+    Pool-->>Main: 发出“哈希完成”事件
+
+    Main->>Main: 事件循环取出回调
+    Main->>Main: 将哈希保存到用户对象
+    Main->>Main: 写入 db.json
+    Main-->>Client: 返回注册成功响应
 
 ---
 
