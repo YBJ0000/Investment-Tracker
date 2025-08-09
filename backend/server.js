@@ -3,7 +3,7 @@ const express = require('express')
 const app = express()
 const PORT = process.env.PORT || 3000
 
-const fs = require('fs') // file system
+const fs = require('fs').promises // file system
 const path = require('path')
 const dbPath = path.join(__dirname, 'db.json')
 
@@ -127,9 +127,9 @@ app.post('/api/login', async (req, res) => {
   }
 })
 
-app.get('/api/profile', authenticateToken, (req, res) => {
+app.get('/api/profile', authenticateToken, async (req, res) => {
   try {
-    const data = fs.readFileSync(dbPath, 'utf-8')
+    const data = await fs.readFile(dbPath, 'utf-8')
     const parsedData = JSON.parse(data)
 
     // current user info
@@ -148,9 +148,9 @@ app.get('/api/profile', authenticateToken, (req, res) => {
   }
 })
 
-app.get('/api/investments', authenticateToken, (req, res) => {
+app.get('/api/investments', authenticateToken, async (req, res) => {
   try {
-    const data = fs.readFileSync(dbPath, 'utf-8')
+    const data = await fs.readFile(dbPath, 'utf-8')
     // parse json string into a javascript object before sending response
     const parsedData = JSON.parse(data)
 
@@ -163,11 +163,11 @@ app.get('/api/investments', authenticateToken, (req, res) => {
   }
 })
 
-app.post('/api/investments', authenticateToken, (req, res) => {
+app.post('/api/investments', authenticateToken, async (req, res) => {
   try {
 
     // read current data
-    const data = fs.readFileSync(dbPath, 'utf-8')
+    const data = await fs.readFile(dbPath, 'utf-8')
     const parsedData = JSON.parse(data)
 
     // create new investment
@@ -181,7 +181,7 @@ app.post('/api/investments', authenticateToken, (req, res) => {
     parsedData.investments.push(newInvestment)
 
     // write into db.json
-    fs.writeFileSync(dbPath, JSON.stringify(parsedData, null, 2))
+    await fs.writeFile(dbPath, JSON.stringify(parsedData, null, 2))
 
     // return created data
     res.status(201).json(newInvestment)
@@ -191,11 +191,11 @@ app.post('/api/investments', authenticateToken, (req, res) => {
   }
 })
 
-app.delete('/api/investments/:id', authenticateToken, (req, res) => {
+app.delete('/api/investments/:id', authenticateToken, async (req, res) => {
   try {
 
     // read current data
-    const data = fs.readFileSync(dbPath, 'utf-8')
+    const data = await fs.readFile(dbPath, 'utf-8')
     const parsedData = JSON.parse(data)
 
     // find index of target investment
@@ -210,7 +210,7 @@ app.delete('/api/investments/:id', authenticateToken, (req, res) => {
     const deletedInvestment = parsedData.investments.splice(index, 1)[0]
 
     // write into db.json
-    fs.writeFileSync(dbPath, JSON.stringify(parsedData, null, 2))
+    await fs.writeFile(dbPath, JSON.stringify(parsedData, null, 2))
 
     // return deleted investment
     res.json({
@@ -223,10 +223,10 @@ app.delete('/api/investments/:id', authenticateToken, (req, res) => {
   }
 })
 
-app.put('/api/investments/:id', authenticateToken, (req, res) => {
+app.put('/api/investments/:id', authenticateToken, async (req, res) => {
   try {
 
-    const data = fs.readFileSync(dbPath, 'utf-8')
+    const data = await fs.readFile(dbPath, 'utf-8')
     const parsedData = JSON.parse(data)
 
     const index = parsedData.investments.findIndex(investments => investments.id === parseInt(req.params.id))
@@ -238,7 +238,7 @@ app.put('/api/investments/:id', authenticateToken, (req, res) => {
     parsedData.investments[index] = req.body
     const updatedInvestment = parsedData.investments[index]
 
-    fs.writeFileSync(dbPath, JSON.stringify(parsedData, null, 2))
+    await fs.writeFile(dbPath, JSON.stringify(parsedData, null, 2))
 
     res.json({
       message: 'Investment has been updated',
