@@ -52,6 +52,7 @@
           EvLoop->>Express: 路由匹配/中间件
           Express->>Handler: 执行(req, res)
           Handler-->>Client: 返回响应
+  ```
 
 - **示例**
   ```js
@@ -206,6 +207,7 @@
     Main->>Main: 将哈希保存到用户对象
     Main->>Main: 写入 db.json
     Main-->>Client: 返回注册成功响应
+  ```
 
 ---
 
@@ -273,6 +275,85 @@
       console.log(user['username']) // "alice"
       ```
   - `JSON.parse` 的目的就是把 JSON 字符串变成真正的对象，这样你才能用 . 或 [] 访问它的属性。
+  - 对象里的属性（property）和数据库里的属性（attribute）是不同的概念。
+    - property 是对象里的键值对，对象里“键值对”的键（key）就是属性名，键对应的值就是属性值。
+    - attribute 是数据模型中定义的字段，不指某个具体值，而是这个字段本身。
+    - HTML里，元素的属性（attribute）是元素的标签里的属性，比如 `<div id="myDiv">` 里的 id 就是 attribute。
+
+- **数据库相关**
+- 数据模型（Data Model）：描述数据表示方式：关系型 / 文档型 / 键值对
+- 数据结构（Data Structure）：数组 / 哈希表 / B+树 / LSM 等（底层实现）
+- 关系模型（Relational Model）：
+  - 数据库模式（Schema）：表、列、类型、主键/外键、约束
+  - 表（Table）：行（Record）
+  - 列（Column）：属性（Attribute）
+  - 行（Row）：记录（Tuple）
+
+- 从数据模型到数据库表的层级图:
+
+```mermaid
+flowchart TD
+  DM["数据模型 Data Model<br/>描述数据表示方式：关系型 / 文档型 / 键值对"]
+  DS["数据结构 Data Structure<br/>数组 / 哈希表 / B+树 / LSM 等（底层实现）"]
+
+  subgraph Rel[关系模型 Relational Model]
+    S["数据库模式 Schema<br/>表、列、类型、主键/外键、约束"]
+    T["表 Table"]
+    C["列 Column（属性 / attribute）"]
+    R["行 Row（记录 / tuple）"]
+    S --> T
+    T --> C
+    T --> R
+  end
+
+  subgraph Doc[文档模型 Document Model]
+    Sch2["集合的模式（可选 Schema）"]
+    Col["集合 Collection"]
+    Docu["文档 Document"]
+    Field["字段 Field"]
+    Sch2 --> Col
+    Col --> Docu
+    Docu --> Field
+  end
+
+  DM --> Rel
+  DM --> Doc
+
+  DS -. 支撑实现 .-> Rel
+  DS -. 支撑实现 .-> Doc
+```
+- SQL vs 理论 vs NoSQL 术语对照表:
+
+```mermaid
+flowchart LR
+  subgraph SQL[SQL 术语]
+    SQL_Table["Table"]
+    SQL_Row["Row / Record"]
+    SQL_Column["Column（工程上也叫 Field）"]
+    SQL_PrimaryKey["Primary Key"]
+    SQL_Database["Database（MySQL 等同 Schema，PostgreSQL Schema 是命名空间）"]
+    SQL_Index["Index"]
+    SQL_Query["Query / Statement"]
+  end
+
+  subgraph Theory[关系模型（理论）]
+    TH_Relation["Relation（关系）"]
+    TH_Tuple["Tuple（元组）"]
+    TH_Attribute["Attribute（属性）"]
+    TH_Key["Key（Primary Key）"]
+    TH_Schema["Schema（模式，整个数据库的定义）"]
+    TH_Index["Index（实现/物理优化概念）"]
+    TH_Expression["Relational Algebra Expression（关系代数表达式）"]
+  end
+
+  SQL_Table --- TH_Relation
+  SQL_Row --- TH_Tuple
+  SQL_Column --- TH_Attribute
+  SQL_PrimaryKey --- TH_Key
+  SQL_Database --- TH_Schema
+  SQL_Index --- TH_Index
+  SQL_Query --- TH_Expression
+```
 
 ---
 
