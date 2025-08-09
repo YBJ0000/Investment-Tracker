@@ -42,7 +42,7 @@ app.post('/api/register', async (req, res) => {
     }
 
     // read current data
-    const data = fs.readFileSync(dbPath, 'utf-8')
+    const data = await fs.readFile(dbPath, 'utf-8')
     const parsedData = JSON.parse(data)
 
     // check if the user already exist
@@ -91,7 +91,7 @@ app.post('/api/login', async (req, res) => {
     }
 
     // read current data
-    const data = fs.readFileSync(dbPath, 'utf-8')
+    const data = await fs.readFile(dbPath, 'utf-8')
     const parsedData = JSON.parse(data)
 
     // find user
