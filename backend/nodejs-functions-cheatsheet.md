@@ -7,7 +7,7 @@
 ## 项目结构中的关键点（背景）
 - 使用 `Express` 暴露 REST API；用 `JSON` 文件当作简易数据库（`db.json`）。
 - 认证使用 **JWT**（`jsonwebtoken`）与 **bcrypt**（`bcryptjs`）。
-- 身份校验通过自定义中间件 `authenticateToken` 实现，路由如 `/api/investments` 受保护。
+- 身份校验通过自定义中间件 `authenticateToken` 实现，路由如 `/investments` 受保护。
 
 ---
 
@@ -79,10 +79,10 @@
 - **用途**：定义资源的 CRUD。四者**格式一致**，最大差异在**语义**与**是否幂等**。
 - **示例（合并讲）**
   ```js
-  app.get('/api/investments', authenticateToken, handler)     // 读
-  app.post('/api/investments', authenticateToken, handler)    // 新建
-  app.put('/api/investments/:id', authenticateToken, handler) // 全量更新
-  app.delete('/api/investments/:id', authenticateToken, handler) // 删除
+  app.get('/investments', authenticateToken, handler)     // 读
+  app.post('/investments', authenticateToken, handler)    // 新建
+  app.put('/investments/:id', authenticateToken, handler) // 全量更新
+  app.delete('/investments/:id', authenticateToken, handler) // 删除
   ```
   以上均出现在你的代码里。
 
@@ -194,7 +194,7 @@
     participant Pool as 线程池(I/O/CPU密集)
     participant Crypto as bcrypt哈希计算
 
-    Client->>Main: HTTP POST /api/register (username + password)
+    Client->>Main: HTTP POST /register (username + password)
     Main->>Main: 执行验证输入
     Main->>Pool: bcrypt.hash(password, saltRounds)
     Note right of Main: 主线程立即继续处理其他请求
@@ -420,20 +420,20 @@ flowchart LR
 
 ## 10) 典型业务流程（把方法串起来）
 
-### 注册 `/api/register`（公开）
+### 注册 `/register`（公开）
 1. 读取 `db.json` → `JSON.parse`。
 2. `users.find` 检查重名。
 3. `bcrypt.hash` 出哈希 → `users.push`。
 4. `JSON.stringify` → `fs.writeFileSync` 落盘。
 5. `res.status(201).json(...)` 返回用户基本信息。
 
-### 登录 `/api/login`（公开）
+### 登录 `/login`（公开）
 1. 读取并 `find` 用户。
 2. `bcrypt.compare` 校验密码。
 3. `jwt.sign` 生成 `token`。
 4. 返回 `token` 与用户信息。
 
-### 访问受保护资源 `/api/investments`（需要 `Bearer <token>`）
+### 访问受保护资源 `/investments`（需要 `Bearer <token>`）
 1. `authenticateToken`：从 `Authorization` 提取 token → `jwt.verify` → 写入 `req.user`。
 2. 在控制器里用 `req.user.userId` 过滤/落数（`filter`/`push`/`findIndex`/`splice`）。
 
