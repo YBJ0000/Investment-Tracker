@@ -33,7 +33,7 @@ const authenticateToken = (req, res, next) => {
 }
 
 // register: restore user (username + hashed password)
-app.post('/api/register', async (req, res) => {
+app.post('/register', async (req, res) => {
   try {
     const { username, password } = req.body
 
@@ -81,7 +81,7 @@ app.post('/api/register', async (req, res) => {
 })
 
 // login: verify password, return jwt
-app.post('/api/login', async (req, res) => {
+app.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body
 
@@ -127,7 +127,7 @@ app.post('/api/login', async (req, res) => {
   }
 })
 
-app.get('/api/profile', authenticateToken, async (req, res) => {
+app.get('/profile', authenticateToken, async (req, res) => {
   try {
     const data = await fs.readFile(dbPath, 'utf-8')
     const parsedData = JSON.parse(data)
@@ -148,7 +148,7 @@ app.get('/api/profile', authenticateToken, async (req, res) => {
   }
 })
 
-app.get('/api/investments', authenticateToken, async (req, res) => {
+app.get('/investments', authenticateToken, async (req, res) => {
   try {
     const data = await fs.readFile(dbPath, 'utf-8')
     // parse json string into a javascript object before sending response
@@ -163,7 +163,7 @@ app.get('/api/investments', authenticateToken, async (req, res) => {
   }
 })
 
-app.post('/api/investments', authenticateToken, async (req, res) => {
+app.post('/investments', authenticateToken, async (req, res) => {
   try {
 
     // read current data
@@ -191,7 +191,7 @@ app.post('/api/investments', authenticateToken, async (req, res) => {
   }
 })
 
-app.delete('/api/investments/:id', authenticateToken, async (req, res) => {
+app.delete('/investments/:id', authenticateToken, async (req, res) => {
   try {
 
     // read current data
@@ -223,7 +223,7 @@ app.delete('/api/investments/:id', authenticateToken, async (req, res) => {
   }
 })
 
-app.put('/api/investments/:id', authenticateToken, async (req, res) => {
+app.put('/investments/:id', authenticateToken, async (req, res) => {
   try {
 
     const data = await fs.readFile(dbPath, 'utf-8')
