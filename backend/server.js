@@ -65,7 +65,7 @@ app.post('/register', async (req, res) => {
     parsedData.users.push(newUser)
 
     // write into database
-    fs.writeFileSync(dbPath, JSON.stringify(parsedData, null, 2))
+    await fs.writeFile(dbPath, JSON.stringify(parsedData, null, 2))
 
     res.status(201).json({
       message: 'User registered successfully',

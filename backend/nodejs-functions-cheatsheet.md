@@ -454,34 +454,34 @@ flowchart LR
 
 ```bash
 # 注册
-curl -X POST http://localhost:3000/api/register \
+curl -X POST http://localhost:3000/register \
   -H "Content-Type: application/json" \
   -d '{"username":"alice","password":"secret"}'
 
 # 登录（拿 token）
-curl -X POST http://localhost:3000/api/login \
+curl -X POST http://localhost:3000/login \
   -H "Content-Type: application/json" \
   -d '{"username":"alice","password":"secret"}'
 
 # 带 token 获取我的投资
 TOKEN="复制上一步返回的token"
-curl http://localhost:3000/api/investments \
+curl http://localhost:3000/investments \
   -H "Authorization: Bearer $TOKEN"
 
 # 新增投资
-curl -X POST http://localhost:3000/api/investments \
+curl -X POST http://localhost:3000/investments \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $TOKEN" \
   -d '{"symbol":"AAPL","amount":100}'
 
 # 更新投资（全量替换）
-curl -X PUT http://localhost:3000/api/investments/1 \
+curl -X PUT http://localhost:3000/investments/1 \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $TOKEN" \
   -d '{"id":1,"userId":1,"symbol":"AAPL","amount":200}'
 
 # 删除投资
-curl -X DELETE http://localhost:3000/api/investments/1 \
+curl -X DELETE http://localhost:3000/investments/1 \
   -H "Authorization: Bearer $TOKEN"
 ```
 

@@ -1,40 +1,4 @@
 {
-  "users": [
-    {
-      "id": 1,
-      "username": "testuser",
-      "password": "$2b$10$ohiTePHdvJSxkHRirSg4A.XtKRvVrxbCtc8NTyF9O0Khfcsp7Wvtm"
-    },
-    {
-      "id": 2,
-      "username": "testuser2",
-      "password": "$2b$10$MHsqsEkY1QmtLS3jZkWWmOWsXVj1/LO/m9ozvNO9IzopgxFoc4XuK"
-    }
-  ],
-  "investments": [
-    {
-      "id": 1,
-      "userId": 1,
-      "name": "Amazon",
-      "type": "stock",
-      "amount": 1500,
-      "currency": "USD"
-    },
-    {
-      "id": 2,
-      "userId": 2,
-      "name": "Bitcoin",
-      "type": "crypto",
-      "amount": 0.5,
-      "currency": "BTC"
-    },
-    {
-      "id": 3,
-      "userId": 2,
-      "name": "Apple",
-      "type": "stock",
-      "amount": 6000,
-      "currency": "AUD"
-    }
-  ]
+  "users": [],
+  "investments": []
 }
