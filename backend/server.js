@@ -3,7 +3,7 @@ import express from 'express'
 const app = express()
 const PORT = process.env.PORT || 3000
 
-import fs from 'fs'
+import { promises as fs } from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
