@@ -1,14 +1,16 @@
-require('dotenv').config()
-const express = require('express')
+import dotenv from 'dotenv'
+import express from 'express'
 const app = express()
 const PORT = process.env.PORT || 3000
 
-const fs = require('fs').promises // file system
-const path = require('path')
-const dbPath = path.join(__dirname, 'db.json')
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
 
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcryptjs')
+const dbPath = path.join(path.dirname(fileURLToPath(import.meta.url)), 'db.json')
+
+import jwt from 'jsonwebtoken'
+import bcrypt from 'bcryptjs'
 
 const JWT_SECRET = process.env.JWT_SECRET
 

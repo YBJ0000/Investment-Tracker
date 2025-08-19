@@ -15,6 +15,7 @@
     "nodejs"
   ],
   "author": "Bingjia Yang",
+  "type": "module",
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^3.0.2",
