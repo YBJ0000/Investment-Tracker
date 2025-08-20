@@ -13,13 +13,14 @@
 
 ## 1) 环境变量与启动
 
-### `require('dotenv').config()`
+### `import dotenv from 'dotenv'`和`dotenv.config()`
 - **输入**：无；从项目根目录读取 `.env`。
 - **输出**：把 `.env` 中的键值注入 `process.env`。
 - **用途**：安全地管理 `JWT_SECRET`、`PORT` 等敏感配置。
 - **示例**
   ```js
-  require('dotenv').config()
+  import dotenv from 'dotenv'
+  dotenv.config()
   const JWT_SECRET = process.env.JWT_SECRET
   const PORT = process.env.PORT || 3000
   ```
@@ -127,7 +128,7 @@
 ### `jwt.sign(payload, secret, options)`
 - **输入**：`payload`（对象）、`secret`、可选 `expiresIn` 等。
 - **输出**：**字符串** token。
-- **用途**：在登录成功后给前端一个可携带身份的 token。
+- **用途**：在登录成功后给前端签发一个可携带身份的 token。
 - **示例**
   ```js
   const token = jwt.sign(
@@ -159,6 +160,18 @@
 - **输入**：明文密码、已保存的哈希。
 - **输出**：**布尔**（是否匹配）。
 - **用途**：登录时验证密码。
+- **原理**：并不是直接解密，而是**重新哈希再比对**。
+  - 一个 bcrypt 哈希看起来像这样：
+    ```
+    $2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36NEPbVvP5I11.5u5E1BnzW
+    ```
+    - 前缀 `$2b$10$` 表示算法版本（bcrypt）和盐强度（10）。
+    - 中间部分是随机生成的盐（`EixZaYVK1fsbw1ZfbX3OXe`）。
+    - 后缀是哈希值 (`PaWxn96p36NEPbVvP5I11.5u5E1BnzW`)。
+  - compare 的流程：
+    - 从存储的哈希值里解析出 salt 和 cost
+    - 用输入的明文密码 重新执行 bcrypt.hash(plain, salt, cost)
+    - 如果新算出的结果 == 存储的哈希结果，返回 true；否则返回 false
 
 ### 相关知识补充
 - **为什么bcrypt有关的函数要用async/await？**
@@ -219,19 +232,25 @@
 - **用途**：保证不同系统路径分隔符一致。
 - **示例**：
   ```js
-  const dbPath = path.join(__dirname, 'db.json')
+  const dbPath = path.join(path.dirname(fileURLToPath(import.meta.url)), 'db.json')
   ```
 
-### `fs.readFileSync(file, 'utf-8')`
+### `fs.readFile(file, 'utf-8')`
 - **输入**：文件路径、编码。
 - **输出**：**字符串** 文件内容。
 - **用途**：读取 JSON 字符串，随后用 `JSON.parse` 解析。
+  ```js
+  const data = await fs.readFile(dbPath, 'utf-8')
+  const parsedData = JSON.parse(data)
+  ```
 
-### `fs.writeFileSync(file, data)`
+### `fs.writeFile(file, data)`
 - **输入**：文件路径、要写入的字符串（常配 `JSON.stringify`）。
 - **输出**：无（写入副作用）。
 - **用途**：把更新后的对象持久化到 `db.json`。建议加 `try/catch` 与备份策略。
-
+  ```js
+  await fs.writeFile(dbPath, JSON.stringify(parsedData, null, 2))
+  ```
 ---
 
 ## 7) JSON 相关
@@ -439,12 +458,25 @@ flowchart LR
 
 ---
 
-## 11) 错误处理与状态码（速查）
-- `400 Bad Request`：缺字段/格式错误。
-- `401 Unauthorized`：**缺少** token。
-- `403 Forbidden`：token 无效/过期。
-- `404 Not Found`：资源不存在（如 `findIndex` 为 `-1`）。
-- `500 Internal Server Error`：服务器内部错误（`try/catch` 捕获后返回）。
+## 11) 状态码（速查）
+- `100 Continue`：请求继续
+- `101 Switching Protocols`：协议切换（如从 HTTP 切换到 WebSocket）
+- `200 OK`：请求成功
+- `201 Created`：资源创建成功
+- `204 No Content`：请求成功，但无内容返回（常用于删除操作）
+- `301 Moved Permanently`：永久重定向，浏览器会缓存重定向规则（旧地址 → 新地址），以后直接访问新地址
+- `302 Found`：临时重定向，默认不缓存重定向规则，下次还会请求旧地址；除非服务端明确加了 Cache-Control
+- `304 Not Modified`：资源未修改，浏览器使用自己已有的内容缓存副本（磁盘或内存中的文件内容），节省带宽和响应时间
+- `400 Bad Request`：请求参数错误，如缺少字段、格式错误
+- `401 Unauthorized`：未授权，通常是 token 无效或过期
+- `403 Forbidden`：拒绝访问，通常是 token 有效但无权限
+- `404 Not Found`：资源不存在（如 `findIndex` 为 `-1`）
+- `405 Method Not Allowed`：请求方法不支持
+- `429 Too Many Requests`：请求频率过多，被限流
+- `500 Internal Server Error`：服务器内部错误
+- `502 Bad Gateway`：网关错误，通常是代理服务器无法连接到后端服务器
+- `503 Service Unavailable`：服务不可用，通常是服务器过载或维护
+- `504 Gateway Timeout`：网关超时，通常是代理服务器无法连接到后端服务器
 
 ---
 
